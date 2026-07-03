@@ -1,0 +1,36 @@
+package com.saumya.projects.lovable_clone.service.impl;
+
+import com.saumya.projects.lovable_clone.dto.project.ProjectRequest;
+import com.saumya.projects.lovable_clone.dto.project.ProjectResponse;
+import com.saumya.projects.lovable_clone.service.ProjectService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ProjectServiceImpl implements ProjectService {
+    @Override
+    public List<ProjectResponse> getProjects(Long userId) {
+        return List.of();
+    }
+
+    @Override
+    public ProjectResponse getProject(Long id, Long userId) {
+        return null;
+    }
+
+    @Override
+    public ProjectResponse createProject(ProjectRequest request, Long userId) {
+        return null;
+    }
+
+    @Override
+    public ProjectResponse updateProject(Long id, ProjectRequest request, Long userId) {
+        return null;
+    }
+
+    @Override
+    public void softDelete(Long id, Long userId) {
+
+    }
+}
