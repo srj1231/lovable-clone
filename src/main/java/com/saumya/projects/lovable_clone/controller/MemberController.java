@@ -1,7 +1,7 @@
 package com.saumya.projects.lovable_clone.controller;
 
 import com.saumya.projects.lovable_clone.dto.member.InviteMemberRequest;
-import com.saumya.projects.lovable_clone.dto.member.ProjectMemberResponse;
+import com.saumya.projects.lovable_clone.dto.member.MemberResponse;
 import com.saumya.projects.lovable_clone.dto.member.UpdateMemberRoleRequest;
 import com.saumya.projects.lovable_clone.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +19,13 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/members")
-    public ResponseEntity<List<ProjectMemberResponse>> getAllMembers(@PathVariable Long projectId) {
+    public ResponseEntity<List<MemberResponse>> getAllMembers(@PathVariable Long projectId) {
         Long userId = 1L;
         return ResponseEntity.ok(memberService.getPerms(projectId, userId));
     }
 
     @PostMapping
-    public ResponseEntity<ProjectMemberResponse> inviteMember(
+    public ResponseEntity<MemberResponse> inviteMember(
             @PathVariable Long projectId,
             @RequestBody InviteMemberRequest request
     ) {
@@ -34,7 +34,7 @@ public class MemberController {
     }
 
     @PatchMapping("/memberId")
-    public ResponseEntity<ProjectMemberResponse> updateMemberRole(
+    public ResponseEntity<MemberResponse> updateMemberRole(
             @PathVariable Long projectId,
             @PathVariable Long memberId,
             @RequestBody UpdateMemberRoleRequest request
@@ -44,7 +44,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/memberId")
-    public ResponseEntity<ProjectMemberResponse> deleteMember(
+    public ResponseEntity<MemberResponse> deleteMember(
             @PathVariable Long projectId,
             @PathVariable Long memberId
     ) {
