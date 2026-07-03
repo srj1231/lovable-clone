@@ -1,4 +1,4 @@
-package com.saumya.projects.lovable_clone.dto.projectMember;
+package com.saumya.projects.lovable_clone.dto.member;
 
 import com.saumya.projects.lovable_clone.enums.ProjectRole;
 

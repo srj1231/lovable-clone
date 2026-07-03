@@ -1,12 +1,12 @@
 package com.saumya.projects.lovable_clone.service;
 
-import com.saumya.projects.lovable_clone.dto.projectMember.InviteMemberRequest;
-import com.saumya.projects.lovable_clone.dto.projectMember.ProjectMemberResponse;
-import com.saumya.projects.lovable_clone.dto.projectMember.UpdateMemberRoleRequest;
+import com.saumya.projects.lovable_clone.dto.member.InviteMemberRequest;
+import com.saumya.projects.lovable_clone.dto.member.ProjectMemberResponse;
+import com.saumya.projects.lovable_clone.dto.member.UpdateMemberRoleRequest;
 
 import java.util.List;
 
-public interface ProjectMemberService {
+public interface MemberService {
     List<ProjectMemberResponse> getPerms(Long projectId, Long userId);
 
     ProjectMemberResponse inviteMember(Long projectId, InviteMemberRequest request, Long userId);
