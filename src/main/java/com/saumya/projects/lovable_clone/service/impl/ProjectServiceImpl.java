@@ -2,6 +2,7 @@ package com.saumya.projects.lovable_clone.service.impl;
 
 import com.saumya.projects.lovable_clone.dto.project.ProjectRequest;
 import com.saumya.projects.lovable_clone.dto.project.ProjectResponse;
+import com.saumya.projects.lovable_clone.dto.project.ProjectSummaryResponse;
 import com.saumya.projects.lovable_clone.entity.Project;
 import com.saumya.projects.lovable_clone.entity.User;
 import com.saumya.projects.lovable_clone.mapper.ProjectMapper;
@@ -27,8 +28,16 @@ public class ProjectServiceImpl implements ProjectService {
     ProjectMapper projectMapper;
 
     @Override
-    public List<ProjectResponse> getProjects(Long userId) {
-        return List.of();
+    public List<ProjectSummaryResponse> getUserProjects(Long userId) {
+// one way:
+//        return projectRepository.findProjectsByUser(userId)
+//        .stream()
+//        .map(projectMapper::toProjectSummaryResponse)
+//        .toList();
+
+// another way:
+        var projects = projectRepository.findProjectsByUser(userId);
+        return projectMapper.toListProjectSummaryResponse(projects);
     }
 
     @Override
