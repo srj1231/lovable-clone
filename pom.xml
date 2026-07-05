@@ -87,6 +87,27 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
+
+		<!-- spring security default behaviour:
+		  Authentication:
+		  	- Creates a default user with username user and a random password printed to console on startup
+			- All endpoints require authentication by default
+			- Form-based login at /login (auto-generated)
+			- Logout at /logout (auto-generated)
+
+		  Authorization:
+			- All HTTP requests are protected by default (CSRF protection)
+			- Session management uses cookies
+
+		  Security Headers:
+			- Various security headers are automatically added (X-Frame-Options, X-XSS-Protection, etc.)
+
+		  Modern websites use JWT.
+		  -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
