@@ -33,7 +33,7 @@ public class ProjectMemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(projectMemberService.inviteMember(projectId, request, userId));
     }
 
-    @PatchMapping("/memberId")
+    @PatchMapping("/{memberId}")
     public ResponseEntity<MemberResponse> updateMemberRole(
             @PathVariable Long projectId,
             @PathVariable Long memberId,
@@ -43,12 +43,13 @@ public class ProjectMemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(projectMemberService.updateMemberRole(projectId, memberId, request, userId));
     }
 
-    @DeleteMapping("/memberId")
-    public ResponseEntity<MemberResponse> deleteMember(
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<Void> removeProjectMember(
             @PathVariable Long projectId,
             @PathVariable Long memberId
     ) {
         Long userId = 1L;
-        return ResponseEntity.ok(projectMemberService.deleteProjectMember(projectId, memberId, userId));
+        projectMemberService.removeProjectMember(projectId, memberId, userId);
+        return ResponseEntity.noContent().build();
     }
 }
