@@ -30,10 +30,6 @@ public class Project {
     @Column(nullable = false)
     String name;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false) // specifies the foreign key
-    User owner;
-
     @Builder.Default
     Boolean isPublic = false;
 

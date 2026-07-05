@@ -19,7 +19,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,24 +36,29 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     public List<MemberResponse> getProjectMembers(Long projectId, Long userId) {
         Project project = getAccessibleProjectById(projectId, userId);
 
-        List<MemberResponse> membersResponseList = new ArrayList<>();
-        membersResponseList.add(projectMemberMapper.toMemberResponseFromOwner(project.getOwner()));
+        // List<MemberResponse> membersResponseList = new ArrayList<>();
 
-        projectMemberRepository.findByProjectId(projectId)
+        // don't need to get owner from project, can be fetched from projectMemberRepository with projectRole = "OWNER"
+        // membersResponseList.add(projectMemberMapper.toMemberResponseFromOwner(project.getOwner()));
+
+        return projectMemberRepository.findByProjectId(projectId)
                 .stream()
                 .map(projectMemberMapper::toMemberResponseFromMember)
-                .forEach(membersResponseList::add);
-
-        return membersResponseList;
+                .toList();
     }
 
     @Override
     public MemberResponse inviteMember(Long projectId, InviteMemberRequest request, Long userId) {
         Project project = getAccessibleProjectById(projectId, userId);
 
-        User invitee = userRepository.findByEmail(request.email()).orElseThrow();
+        User invitee = userRepository.findByUsername(request.email()).orElseThrow();
 
-        if(invitee.getId().equals(userId) || invitee.getId().equals(project.getOwner().getId())){
+        // this can be handled by Spring Security later
+//        if (invitee.getId().equals(project.getOwner().getId())) {
+//            throw new RuntimeException("Not allowed.");
+//        }
+
+        if(invitee.getId().equals(userId)){
             throw new RuntimeException("You can't invite yourself");
         }
 
@@ -81,9 +85,10 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     public MemberResponse updateMemberRole(Long projectId, Long memberId, UpdateMemberRoleRequest request, Long userId) {
         Project project = getAccessibleProjectById(projectId, userId);
 
-        if(!project.getOwner().getId().equals(userId)){
-            throw new RuntimeException("You can't make changes to the project.");
-        }
+        // this can be handled by Spring Security later
+//        if(!project.getOwner().getId().equals(userId)){
+//            throw new RuntimeException("You can't make changes to the project.");
+//        }
 
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId, memberId);
 
@@ -98,9 +103,10 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     public void removeProjectMember(Long projectId, Long memberId, Long userId) {
         Project project = getAccessibleProjectById(projectId, userId);
 
-        if(!project.getOwner().getId().equals(userId)){
-            throw new RuntimeException("You can't make changes to the project.");
-        }
+        // this can be handled by Spring Security later
+//        if(!project.getOwner().getId().equals(userId)){
+//            throw new RuntimeException("You can't make changes to the project.");
+//        }
 
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId, memberId);
         if(!projectMemberRepository.existsById(projectMemberId)) {
