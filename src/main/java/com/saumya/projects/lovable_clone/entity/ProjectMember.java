@@ -32,9 +32,8 @@ public class ProjectMember {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    ProjectRole role;
+    ProjectRole projectRole;
 
-    Long invitedBy; // FK
     Instant invitedAt;
 }
 
