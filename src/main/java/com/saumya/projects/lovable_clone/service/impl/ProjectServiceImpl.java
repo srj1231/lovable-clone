@@ -5,6 +5,7 @@ import com.saumya.projects.lovable_clone.dto.project.ProjectResponse;
 import com.saumya.projects.lovable_clone.dto.project.ProjectSummaryResponse;
 import com.saumya.projects.lovable_clone.entity.Project;
 import com.saumya.projects.lovable_clone.entity.User;
+import com.saumya.projects.lovable_clone.exceptions.ResourceNotFoundException;
 import com.saumya.projects.lovable_clone.mapper.ProjectMapper;
 import com.saumya.projects.lovable_clone.repository.ProjectRepository;
 import com.saumya.projects.lovable_clone.repository.UserRepository;
@@ -88,6 +89,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     public Project getAccessibleProjectById(Long id, Long userId) {
-        return projectRepository.findAccessibleProjectById(id, userId).orElseThrow();
+        return projectRepository.findAccessibleProjectById(id, userId)
+                .orElseThrow(() -> new ResourceNotFoundException(id, "Project"));
     }
 }
