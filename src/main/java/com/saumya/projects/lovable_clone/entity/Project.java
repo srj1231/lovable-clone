@@ -25,7 +25,7 @@ public class Project {
     String name;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
+    @JoinColumn(name = "owner_id", nullable = false) // specifies the foreign key
     User owner;
 
     @Builder.Default
