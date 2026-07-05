@@ -6,8 +6,8 @@ import com.saumya.projects.lovable_clone.dto.member.UpdateMemberRoleRequest;
 
 import java.util.List;
 
-public interface MemberService {
-    List<MemberResponse> getPerms(Long projectId, Long userId);
+public interface ProjectMemberService {
+    List<MemberResponse> getProjectMembers(Long projectId, Long userId);
 
     MemberResponse inviteMember(Long projectId, InviteMemberRequest request, Long userId);
 
