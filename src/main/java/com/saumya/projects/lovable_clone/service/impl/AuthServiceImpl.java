@@ -26,7 +26,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse signup(SignupRequest request) {
         userRepository.findByUsername(request.username()).ifPresent(user -> {
-            throw new BadRequestException("User already exists" + request.username());
+            throw new BadRequestException("User already exists " + request.username());
         });
 
         User user = userMapper.toEntity(request);
