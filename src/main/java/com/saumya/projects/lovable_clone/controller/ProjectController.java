@@ -27,7 +27,7 @@ public class ProjectController {
     @GetMapping("/{id}")
     public ResponseEntity<ProjectResponse> getProject(@PathVariable Long id) {
         Long userId = 1L; // hardcoded for now, update later with Spring Security
-        return ResponseEntity.ok(projectService.getProject(id, userId));
+        return ResponseEntity.ok(projectService.getProjectById(id, userId));
     }
 
     @PostMapping

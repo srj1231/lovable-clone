@@ -41,8 +41,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectResponse getProject(Long id, Long userId) {
-        return null;
+    public ProjectResponse getProjectById(Long id, Long userId) {
+        Project project = projectRepository.findAccessibleProjectById(id, userId).orElseThrow();
+        return projectMapper.toProjectResponse(project);
     }
 
     @Override
