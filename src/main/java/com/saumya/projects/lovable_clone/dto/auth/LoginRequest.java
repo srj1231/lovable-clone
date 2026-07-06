@@ -1,10 +1,10 @@
 package com.saumya.projects.lovable_clone.dto.auth;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public record LoginRequest(
         @NotBlank String username,
-        @Min(4) String password
+        @Size(min = 4) String password
 ) {
 }

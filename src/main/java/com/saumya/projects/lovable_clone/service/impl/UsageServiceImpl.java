@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UsageServiceImpl implements UsageService {
     @Override
-    public UsageTodayResponse getUsageToday(Long userId) {
+    public UsageTodayResponse getUsageToday() {
         return null;
     }
 
     @Override
-    public PlanLimitResponse getCurrentPlanLimit(Long userId) {
+    public PlanLimitResponse getCurrentPlanLimit() {
         return null;
     }
 }

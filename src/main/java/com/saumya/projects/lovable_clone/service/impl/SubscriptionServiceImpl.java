@@ -10,17 +10,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
-    public SubscriptionResponse getMySubscription(Long userId) {
+    public SubscriptionResponse getMySubscription() {
         return null;
     }
 
     @Override
-    public CheckoutResponse createCheckoutSessionUrl(Long userId, CheckoutRequest request) {
+    public CheckoutResponse createCheckoutSessionUrl(CheckoutRequest request) {
         return null;
     }
 
     @Override
-    public PortalResponse createPortalSessionUrl(Long userId) {
+    public PortalResponse createPortalSessionUrl() {
         return null;
     }
 }
