@@ -21,14 +21,12 @@ public class FilesController {
 
     @GetMapping
     public ResponseEntity<List<FileNode>> getFileTree(@PathVariable Long projectId) {
-        Long userId = 1L;
-        return ResponseEntity.ok(fileService.getFileTree(projectId, userId));
+        return ResponseEntity.ok(fileService.getFileTree(projectId));
     }
 
     @GetMapping("/{*path}")
     public ResponseEntity<FileContentResponse> getFile(@PathVariable Long projectId, @PathVariable String path) {
-        Long userId = 1L;
-        return ResponseEntity.ok(fileService.getFile(projectId, path, userId));
+        return ResponseEntity.ok(fileService.getFile(projectId, path));
     }
 
     // TODO: download as zip

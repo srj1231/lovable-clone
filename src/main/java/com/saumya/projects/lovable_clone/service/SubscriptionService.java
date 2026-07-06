@@ -6,9 +6,9 @@ import com.saumya.projects.lovable_clone.dto.subscription.PortalResponse;
 import com.saumya.projects.lovable_clone.dto.subscription.SubscriptionResponse;
 
 public interface SubscriptionService {
-    SubscriptionResponse getMySubscription(Long userId);
+    SubscriptionResponse getMySubscription();
 
-    CheckoutResponse createCheckoutSessionUrl(Long userId, CheckoutRequest request);
+    CheckoutResponse createCheckoutSessionUrl(CheckoutRequest request);
 
-    PortalResponse createPortalSessionUrl(Long userId);
+    PortalResponse createPortalSessionUrl();
 }
