@@ -10,7 +10,16 @@ import lombok.experimental.FieldDefaults;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class ProjectMemberId {
     Long projectId;
     Long userId;
 }
+
+/*
+ * @EqualsAndHashCode:
+ * Hibernate requires equals() and hashCode() for composite primary keys to:
+ * - Properly identify entity instances in the persistence context
+ * - Manage entity caching and dirty checking
+ * - Handle collections and relationships correctly
+ */

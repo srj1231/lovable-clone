@@ -62,7 +62,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.save(project);
 
         User owner = userRepository.findById(userId).orElseThrow(
-                () -> new ResourceNotFoundException(userId, "User")
+                () -> new ResourceNotFoundException(userId.toString(), "User")
         );
         ProjectMemberId projectMemberId = new ProjectMemberId(project.getId(), owner.getId());
         ProjectMember projectMember = ProjectMember.builder()
@@ -108,6 +108,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     public Project getAccessibleProjectById(Long id, Long userId) {
         return projectRepository.findAccessibleProjectById(id, userId)
-                .orElseThrow(() -> new ResourceNotFoundException(id, "Project"));
+                .orElseThrow(() -> new ResourceNotFoundException(id.toString(), "Project"));
     }
 }
