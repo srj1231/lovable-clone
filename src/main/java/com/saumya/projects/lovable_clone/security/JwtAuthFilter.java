@@ -36,16 +36,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = requestToken.split("Bearer ")[1];
-        JwtUserPrinciple user = authUtil.verifyToken(token);
+        try {
+            String token = requestToken.split("Bearer ")[1];
+            JwtUserPrinciple user = authUtil.verifyToken(token);
 
-        if(user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                    user, // authenticated user object - principal
-                    null, // credentials
-                    user.authorities() // permissions/roles granted to the user
-            );
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            if(user != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                        user, // authenticated user object - principal
+                        null, // credentials
+                        user.authorities() // permissions/roles granted to the user
+                );
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            }
+        } catch (Exception e) {
+            log.warn("Failed to verify JWT token: {}", e.getMessage());
         }
 
         filterChain.doFilter(request, response); // pass request to next filter in chain for stateless authentication
