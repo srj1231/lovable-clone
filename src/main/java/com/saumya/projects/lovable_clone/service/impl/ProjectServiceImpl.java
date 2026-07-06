@@ -66,9 +66,15 @@ public class ProjectServiceImpl implements ProjectService {
 
         projectRepository.save(project);
 
-        User owner = userRepository.findById(userId).orElseThrow(
-                () -> new ResourceNotFoundException(userId.toString(), "User")
-        );
+//        User owner = userRepository.findById(userId).orElseThrow(
+//                () -> new ResourceNotFoundException(userId.toString(), "User")
+//        ); // Safer for validation, but less efficient for relationship-only use
+
+        User owner = userRepository.getReferenceById(userId); // a proxy object for the user - lazy loading. Database query is not executed here.
+//        - Risk: If the user doesn't exist, you'll get a EntityNotFoundException when the proxy is accessed
+//        - should only be used within a transactional context
+
+
         ProjectMemberId projectMemberId = new ProjectMemberId(project.getId(), owner.getId());
         ProjectMember projectMember = ProjectMember.builder()
                 .id(projectMemberId)
