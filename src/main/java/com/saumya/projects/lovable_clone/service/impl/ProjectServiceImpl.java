@@ -19,6 +19,7 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -52,8 +53,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectResponse getProjectById(Long id) {
-        Project project = getAccessibleProjectById(id);
+    @PreAuthorize("@security.canViewProject(#projectId)")
+    public ProjectResponse getUserProjectById(Long projectId) {
+        Project project = getProjectsAccessibleToUser(projectId);
         return projectMapper.toProjectResponse(project);
     }
 
@@ -70,10 +72,10 @@ public class ProjectServiceImpl implements ProjectService {
 //                () -> new ResourceNotFoundException(userId.toString(), "User")
 //        ); // Safer for validation, but less efficient for relationship-only use
 
-        User owner = userRepository.getReferenceById(userId); // a proxy object for the user - lazy loading. Database query is not executed here.
+        // a proxy object for the user - lazy loading. Database query is not executed here.
 //        - Risk: If the user doesn't exist, you'll get a EntityNotFoundException when the proxy is accessed
 //        - should only be used within a transactional context
-
+        User owner = userRepository.getReferenceById(userId);
 
         ProjectMemberId projectMemberId = new ProjectMemberId(project.getId(), owner.getId());
         ProjectMember projectMember = ProjectMember.builder()
@@ -95,7 +97,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectResponse updateProject(Long id, ProjectRequest request) {
-        Project project = getAccessibleProjectById(id);
+        Project project = getProjectsAccessibleToUser(id);
 
         // updating project name
         project.setName(request.name());
@@ -106,7 +108,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void softDelete(Long id) {
-        Project project = getAccessibleProjectById(id);
+        Project project = getProjectsAccessibleToUser(id);
 
         // to be handled by Spring Security later
 //        if(!project.getOwner().getId().equals(userId)){
@@ -117,7 +119,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.save(project);
     }
 
-    public Project getAccessibleProjectById(Long id) {
+    public Project getProjectsAccessibleToUser(Long id) {
         Long userId = authUtil.getCurrentUserId();
         return projectRepository.findAccessibleProjectById(id, userId)
                 .orElseThrow(() -> new ResourceNotFoundException(id.toString(), "Project"));
