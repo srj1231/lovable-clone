@@ -2,13 +2,14 @@ package com.saumya.projects.lovable_clone.service;
 
 import com.saumya.projects.lovable_clone.dto.project.ProjectRequest;
 import com.saumya.projects.lovable_clone.dto.project.ProjectResponse;
+import com.saumya.projects.lovable_clone.dto.project.ProjectSummaryResponse;
 
 import java.util.List;
 
 public interface ProjectService {
-    List<ProjectResponse> getProjects(Long userId);
+    List<ProjectSummaryResponse> getUserProjects(Long userId);
 
-    ProjectResponse getProject(Long id, Long userId);
+    ProjectResponse getProjectById(Long id, Long userId);
 
     ProjectResponse createProject(ProjectRequest request, Long userId);
 

@@ -2,6 +2,7 @@ package com.saumya.projects.lovable_clone.controller;
 
 import com.saumya.projects.lovable_clone.dto.project.ProjectRequest;
 import com.saumya.projects.lovable_clone.dto.project.ProjectResponse;
+import com.saumya.projects.lovable_clone.dto.project.ProjectSummaryResponse;
 import com.saumya.projects.lovable_clone.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,15 +19,15 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping
-    public ResponseEntity<List<ProjectResponse>> getProjects() {
+    public ResponseEntity<List<ProjectSummaryResponse>> getProjects() {
         Long userId = 1L; // hardcoded for now
-        return ResponseEntity.ok(projectService.getProjects(userId));
+        return ResponseEntity.ok(projectService.getUserProjects(userId));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProjectResponse> getProject(@PathVariable Long id) {
         Long userId = 1L; // hardcoded for now, update later with Spring Security
-        return ResponseEntity.ok(projectService.getProject(id, userId));
+        return ResponseEntity.ok(projectService.getProjectById(id, userId));
     }
 
     @PostMapping
