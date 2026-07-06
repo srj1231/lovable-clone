@@ -1,6 +1,6 @@
 package com.saumya.projects.lovable_clone.security;
 
-import com.saumya.projects.lovable_clone.enums.ProjectRole;
+import com.saumya.projects.lovable_clone.enums.ProjectPermission;
 import com.saumya.projects.lovable_clone.repository.ProjectMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -11,22 +11,30 @@ public class SecurityExpressions {
     private final ProjectMemberRepository projectMemberRepository;
     private final AuthUtil authUtil;
 
-    public boolean canViewProject(Long projectId) {
+    private boolean hasPermission(Long projectId, ProjectPermission permission) {
         Long userId = authUtil.getCurrentUserId();
         return projectMemberRepository.findRoleByProjectIdAndUserId(projectId, userId)
-                .map(role -> role.equals(ProjectRole.OWNER)
-                        || role.equals(ProjectRole.EDITOR)
-                        || role.equals(ProjectRole.VIEWER)
-                )
+                .map(role -> role.getPermissions().contains(permission))
                 .orElse(false);
     }
 
+    public boolean canViewProject(Long projectId) {
+        return hasPermission(projectId, ProjectPermission.VIEW);
+    }
+
     public boolean canEditProject(Long projectId) {
-        Long userId = authUtil.getCurrentUserId();
-        return projectMemberRepository.findRoleByProjectIdAndUserId(projectId, userId)
-                .map(role -> role.equals(ProjectRole.OWNER)
-                        || role.equals(ProjectRole.EDITOR)
-                )
-                .orElse(false);
+        return hasPermission(projectId, ProjectPermission.EDIT);
+    }
+
+    public boolean canDeleteProject(Long projectId) {
+        return hasPermission(projectId, ProjectPermission.DELETE);
+    }
+
+    public boolean canManageMembers(Long projectId) {
+        return hasPermission(projectId, ProjectPermission.MANAGE_MEMBERS);
+    }
+
+    public boolean canViewMembers(Long projectId) {
+        return hasPermission(projectId, ProjectPermission.VIEW_MEMBERS);
     }
 }

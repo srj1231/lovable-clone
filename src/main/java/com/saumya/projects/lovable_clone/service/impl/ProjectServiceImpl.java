@@ -96,8 +96,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectResponse updateProject(Long id, ProjectRequest request) {
-        Project project = getProjectsAccessibleToUser(id);
+    @PreAuthorize("@security.canEditProject(#projectId)")
+    public ProjectResponse updateProject(Long projectId, ProjectRequest request) {
+        Project project = getProjectsAccessibleToUser(projectId);
 
         // updating project name
         project.setName(request.name());
@@ -107,14 +108,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void softDelete(Long id) {
-        Project project = getProjectsAccessibleToUser(id);
+    @PreAuthorize("@security.canDeleteProject(#projectId)")
+    public void softDelete(Long projectId) {
+        Project project = getProjectsAccessibleToUser(projectId);
 
         // to be handled by Spring Security later
 //        if(!project.getOwner().getId().equals(userId)){
 //            throw new RuntimeException("You are not authorised to delete this project.");
 //        }
-
         project.setDeletedAt(Instant.now());
         projectRepository.save(project);
     }
