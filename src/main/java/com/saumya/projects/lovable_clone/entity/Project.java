@@ -15,7 +15,13 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "projects")
+@Table(name = "projects",
+        indexes = {
+                @Index(name = "idx_project_updated_at_desc", columnList = "updated_at DESC, deleted_at"),
+//                @Index(name = "idx_project_deleted_at_updated_at_desc", columnList = "deleted_at, updated_at DESC"),
+//                @Index(name = "idx_project_deleted_at", columnList = "deleted_at")
+        }
+)
 public class Project {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +29,6 @@ public class Project {
 
     @Column(nullable = false)
     String name;
-
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false) // specifies the foreign key
-    User owner;
 
     @Builder.Default
     Boolean isPublic = false;
@@ -39,3 +41,22 @@ public class Project {
 
     Instant deletedAt; // soft delete
 }
+
+/*
+ * Index 1: idx_project_updated_at_desc
+ * - Optimizes queries that sort projects by most recently updated first (non-deleted)
+ *
+ * Index 2: idx_project_deleted_at_updated_at_desc
+ * - Optimizes queries that get projects that are not deleted and sort by most recently updated
+ *
+ * Index 3: idx_project_deleted_at
+ * - Optimizes queries that filter projects by deleted status
+ *
+ * Benefits:
+ * - avoids full table scan for common query patterns
+ * - reduces I/O operations and improves performance
+ *
+ * Drawbacks:
+ * - requires additional index maintenance (storage)
+ * - impacts write performance (insert/update/delete) as both indexes need to be updated everytime
+ */
