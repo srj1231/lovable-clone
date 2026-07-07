@@ -5,6 +5,7 @@ import com.saumya.projects.lovable_clone.dto.subscription.CheckoutRequest;
 import com.saumya.projects.lovable_clone.dto.subscription.CheckoutResponse;
 import com.saumya.projects.lovable_clone.dto.subscription.PortalResponse;
 import com.saumya.projects.lovable_clone.dto.subscription.SubscriptionResponse;
+import com.saumya.projects.lovable_clone.service.PaymentProcessor;
 import com.saumya.projects.lovable_clone.service.PlanService;
 import com.saumya.projects.lovable_clone.service.SubscriptionService;
 import jakarta.validation.Valid;
@@ -22,6 +23,7 @@ import java.util.List;
 public class BillingController {
     private final PlanService planService;
     private final SubscriptionService subscriptionService;
+    private final PaymentProcessor paymentProcessor;
 
     @GetMapping("api/plans")
     public ResponseEntity<List<PlanResponse>> getAllPlans() {
@@ -33,13 +35,13 @@ public class BillingController {
         return ResponseEntity.ok(subscriptionService.getMySubscription());
     }
 
-    @PostMapping("api/stripe/checkout")
+    @PostMapping("api/payments/checkout")
     public ResponseEntity<CheckoutResponse> createCheckoutResponse(@RequestBody @Valid CheckoutRequest request) {
-        return ResponseEntity.ok(subscriptionService.createCheckoutSessionUrl(request));
+        return ResponseEntity.ok(paymentProcessor.createCheckoutSessionUrl(request));
     }
 
-    @PostMapping("/api/stripe/portal")
+    @PostMapping("/api/payments/portal")
     public ResponseEntity<PortalResponse> openCustomerPortal() {
-        return ResponseEntity.ok(subscriptionService.createPortalSessionUrl());
+        return ResponseEntity.ok(paymentProcessor.createPortalSessionUrl());
     }
 }
