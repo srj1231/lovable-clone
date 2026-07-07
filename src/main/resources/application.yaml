@@ -23,5 +23,7 @@ jwt:
 
 stripe:
   secret: <yourSecretKey>
+  webhook: <your webhook secret> # set up using 1. stripe login, 2. stripe listen --forward-to localhost:8080/webhooks/payment
+#  since our application is on localhost, so BE cannot receive the webhook requests. We need to use stripe listen from OS, then forward the requests to our application.
 
 client.url: http://localhost:8080
