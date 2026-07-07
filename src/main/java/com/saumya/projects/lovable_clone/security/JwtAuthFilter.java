@@ -4,21 +4,27 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import jakarta.annotation.Nonnull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final AuthUtil authUtil;
+    private final HandlerExceptionResolver resolver;
+
+    public JwtAuthFilter(AuthUtil authUtil,
+                         @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
+        this.authUtil = authUtil;
+        this.resolver = resolver;
+    }
 
     /*
      * FilterChain: The sequence of filters that HTTP requests pass through in Spring Security.
@@ -27,16 +33,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
      */
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull FilterChain filterChain) throws ServletException, IOException {
-        log.info("incoming request {}", request.getRequestURI());   // log request for debugging
-
-        final String requestToken = request.getHeader("Authorization");
-        if(requestToken == null || !requestToken.startsWith("Bearer ")) {   // validate token presence and format
-            filterChain.doFilter(request, response); // pass request to next filter in chain
-            return;
-        }
-
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
+            log.info("incoming request {}", request.getRequestURI());   // log request for debugging
+
+            final String requestToken = request.getHeader("Authorization");
+            if(requestToken == null || !requestToken.startsWith("Bearer ")) {   // validate token presence and format
+                filterChain.doFilter(request, response); // pass request to next filter in chain
+                return;
+            }
+
             String token = requestToken.split("Bearer ")[1];
             JwtUserPrinciple user = authUtil.verifyToken(token);
 
@@ -50,6 +56,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             log.warn("Failed to verify JWT token: {}", e.getMessage());
+            resolver.resolveException(request, response, null, e);
         }
 
         filterChain.doFilter(request, response); // pass request to next filter in chain for stateless authentication
