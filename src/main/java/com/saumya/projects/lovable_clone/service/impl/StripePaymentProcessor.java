@@ -4,8 +4,10 @@ import com.saumya.projects.lovable_clone.dto.subscription.CheckoutRequest;
 import com.saumya.projects.lovable_clone.dto.subscription.CheckoutResponse;
 import com.saumya.projects.lovable_clone.dto.subscription.PortalResponse;
 import com.saumya.projects.lovable_clone.entity.Plan;
+import com.saumya.projects.lovable_clone.entity.User;
 import com.saumya.projects.lovable_clone.exceptions.ResourceNotFoundException;
 import com.saumya.projects.lovable_clone.repository.PlanRepository;
+import com.saumya.projects.lovable_clone.repository.UserRepository;
 import com.saumya.projects.lovable_clone.security.AuthUtil;
 import com.saumya.projects.lovable_clone.service.PaymentProcessor;
 import com.stripe.exception.StripeException;
@@ -22,6 +24,7 @@ public class StripePaymentProcessor implements PaymentProcessor {
 
     private final AuthUtil authUtil;
     private final PlanRepository planRepository;
+    private final UserRepository userRepository;
 
     @Value("${client.url}")
     private String frontendUrl;
@@ -33,8 +36,11 @@ public class StripePaymentProcessor implements PaymentProcessor {
         );
 
         Long userId = authUtil.getCurrentUserId();
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User ", userId.toString())
+        );
 
-        SessionCreateParams params = SessionCreateParams.builder()
+        var paramsBuilder = SessionCreateParams.builder()
                 .addLineItem(
                         SessionCreateParams.LineItem.builder().setPrice(plan.getStripePriceId()).setQuantity(1L).build())
                 .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
@@ -48,11 +54,16 @@ public class StripePaymentProcessor implements PaymentProcessor {
                 .setSuccessUrl(frontendUrl + "/success.html?session_id={CHECKOUT_SESSION_ID}")
                 .setCancelUrl(frontendUrl + "/cancel.html")
                 .putMetadata("user_id", userId.toString())
-                .putMetadata("plan_id", plan.getId().toString())
-                .build();
+                .putMetadata("plan_id", plan.getId().toString());
 
         try {
-            Session session = Session.create(params); // call stripe api to create checkout session
+            String stripeUserId = user.getStripeCustomerId();
+            if (stripeUserId == null || stripeUserId.isEmpty()) {
+                paramsBuilder.setCustomerEmail(user.getUsername());
+            } else {
+                paramsBuilder.setCustomer(stripeUserId);
+            }
+            Session session = Session.create(paramsBuilder.build()); // call stripe api to create checkout session
             return new CheckoutResponse(session.getUrl());
         }
         catch (StripeException e) {

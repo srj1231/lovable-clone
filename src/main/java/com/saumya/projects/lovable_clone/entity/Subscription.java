@@ -18,7 +18,6 @@ public class Subscription {
     Plan plan;  // FK plan_id
 
     String stripeSubscriptionId;    // UK stripe_subscription_id
-    String stripeCustomerId;
 
     SubscriptionStatus status;
 
