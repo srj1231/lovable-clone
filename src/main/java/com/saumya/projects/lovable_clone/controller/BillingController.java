@@ -64,7 +64,7 @@ public class BillingController {
             Event event = Webhook.constructEvent(payload, stripeSignature, stripeWebhookSecret);
 
             EventDataObjectDeserializer eventData = event.getDataObjectDeserializer();
-            StripeObject stripeObject = null;
+            StripeObject stripeObject;
 
             if(eventData.getObject().isPresent()) {
                 stripeObject = eventData.getObject().get();
