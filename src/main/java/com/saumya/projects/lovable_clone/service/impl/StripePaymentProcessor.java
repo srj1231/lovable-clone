@@ -11,15 +11,20 @@ import com.saumya.projects.lovable_clone.repository.UserRepository;
 import com.saumya.projects.lovable_clone.security.AuthUtil;
 import com.saumya.projects.lovable_clone.service.PaymentProcessor;
 import com.stripe.exception.StripeException;
+import com.stripe.model.StripeObject;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StripePaymentProcessor implements PaymentProcessor {
 
     private final AuthUtil authUtil;
@@ -74,5 +79,10 @@ public class StripePaymentProcessor implements PaymentProcessor {
     @Override
     public PortalResponse createPortalSessionUrl() {
         return null;
+    }
+
+    @Override
+    public void processWebhookEvent(String type, StripeObject stripeObject, Map<String, String> metadata) {
+        log.info("stripe object: {}", stripeObject);
     }
 }

@@ -29,7 +29,7 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Sets session creation policy to STATELESS. Spring Security won't create or use HTTP sessions.
                 .authorizeHttpRequests( // Configures URL-based authorization rules
-                        auth -> auth.requestMatchers("/api/auth/**").permitAll()
+                        auth -> auth.requestMatchers("/api/auth/**", "/webhooks/**").permitAll()
                                 .anyRequest().authenticated()
                 ) // public auth endpoints are open, while all other API endpoints require authentication via JWT tokens
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); // add jwt filter before username password authentication filter for stateless authentication
